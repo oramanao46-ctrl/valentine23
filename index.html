@@ -11,7 +11,6 @@
             --secondary: #ffacc5;
             --accent: #5e3040;
             --bg: #fff5f7;
-            --purple: #8e44ad;
         }
 
         body {
@@ -74,18 +73,20 @@
         }
         @keyframes pulse { 50% { opacity: 0.6; transform: scale(0.95); } }
 
-        /* --- PAGE 2: TIMER & HEART --- */
+        /* --- PAGE 2: TIMER --- */
         .timer-display {
-            font-size: 1.1rem; color: var(--purple); 
+            font-size: 1.1rem; color: var(--primary); 
             background: white; padding: 15px 25px; border-radius: 50px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin-bottom: 30px;
-            font-weight: 400; text-align: center;
+            font-weight: 400; text-align: center; line-height: 1.6;
         }
         .heart-container {
             width: 220px; height: 200px; position: relative; cursor: pointer;
             transition: transform 0.1s; filter: drop-shadow(0 10px 20px rgba(255, 92, 138, 0.4));
         }
         .heart-container:active { transform: scale(0.95); }
+        .tap-msg { margin-top: 20px; color: #999; font-size: 0.9rem; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
 
         /* --- PAGE 3: SCRATCH --- */
         .scratch-box {
@@ -98,51 +99,76 @@
         .room-scene {
             width: 100%; height: 100%; position: relative;
             background-image: url('photo6.jpg'); 
-            background-size: cover; background-position: center;
+            background-size: cover;
+            background-position: center;
         }
+        .game-hint {
+            position: absolute; top: 70px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.9); color: var(--accent);
+            padding: 8px 20px; border-radius: 20px; font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 40;
+            white-space: nowrap; animation: floatHint 2s infinite ease-in-out;
+        }
+        @keyframes floatHint { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -5px); } }
+
         .hidden-item {
             position: absolute; width: 45px; height: 55px; cursor: pointer;
-            z-index: 10; transition: transform 0.2s;
+            z-index: 10; opacity: 0.9; transition: transform 0.2s;
             background: white; padding: 3px; border-radius: 3px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
         .hidden-item img { width: 100%; height: 100%; object-fit: cover; }
+
         .inventory {
             position: absolute; top: 15px; right: 15px;
             background: rgba(255,255,255,0.95); padding: 8px; border-radius: 15px;
-            display: flex; gap: 5px; z-index: 50;
+            display: flex; gap: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); z-index: 50;
         }
         .inv-slot {
-            width: 35px; height: 35px; background: #eee; border-radius: 8px; overflow: hidden;
+            width: 35px; height: 35px; background: #eee; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .inv-slot.filled { border: 2px solid var(--primary); }
         .inv-slot img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- MODAL --- */
+        /* Modal Preview */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 100;
+            background: rgba(0,0,0,0.7); z-index: 100;
             display: none; align-items: center; justify-content: center;
             backdrop-filter: blur(5px);
         }
         .modal-card {
-            background: white; padding: 15px 15px 25px 15px;
-            border-radius: 10px; max-width: 85%; text-align: center;
+            background: white; padding: 15px 15px 30px 15px;
+            border-radius: 10px; max-width: 280px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: zoomIn 0.3s ease;
         }
         .modal-card img { width: 100%; border-radius: 3px; margin-bottom: 10px; }
+        .btn-keep {
+            background: var(--primary); color: white; border: none;
+            padding: 10px 25px; border-radius: 30px; font-family: 'Kanit';
+            font-size: 1rem; cursor: pointer; margin-top: 15px;
+        }
 
         /* --- FINAL MESSAGE --- */
         .final-msg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 200;
-            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.95); 
+            z-index: 200; display: flex; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: opacity 1.2s;
         }
-        .final-msg-container.show-final { opacity: 1; pointer-events: auto; }
         .final-msg-box {
-            text-align: center; padding: 20px; width: 90%; max-height: 90vh; overflow-y: auto;
+            position: relative; z-index: 205; text-align: center;
+            padding: 30px 20px; background: white; border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(255, 92, 138, 0.2);
+            max-width: 85%; max-height: 80vh; overflow-y: auto;
+            transform: translateY(30px); transition: all 1.5s;
         }
-        .final-msg-box h2 { color: var(--primary); margin-top: 0; }
-        .final-msg-box p { line-height: 1.6; color: #444; font-size: 0.95rem; }
+        .final-msg-container.show-final { opacity: 1; pointer-events: auto; }
+        .final-msg-container.show-final .final-msg-box { transform: translateY(0); }
+        .final-msg-box p { font-size: 0.95rem; line-height: 1.6; color: #555; margin: 0; }
+        
+        @keyframes zoomIn { from { transform: scale(0.5); } to { transform: scale(1); } }
     </style>
 </head>
 <body onclick="playAudio()">
@@ -152,7 +178,7 @@
 
     <div id="page1" class="page active">
         <div class="chase-area">
-            <h2 style="text-align:center; margin-top:80px; color:var(--accent);">จดหมายรักฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
+            <h2 style="text-align:center; margin-top:100px; color:var(--accent);">จดหมายรักฉบับนี้<br>ต้องใช้ความพยายามนะ! 😝</h2>
             <div class="flying-envelope" id="envelope" onmouseover="moveEnv()" ontouchstart="moveEnvMobile(event)">
                 <div class="wing left"></div><div class="env-body">💌</div><div class="wing right"></div>
             </div>
@@ -161,35 +187,39 @@
     </div>
 
     <div id="page2" class="page">
-        <h2 style="margin-bottom:10px;">เราคุ้นเคยกันมาจะ 2 ปีแว๊วน๊ะค๊ะ<br>ที่ร๊าก ก 💜</h2>
-        <div class="timer-display" id="timer">คำนวณเวลา...</div>
+        <div class="timer-display">
+            เราคุ้นเคยกันมาจะ 2 ปีแว๊วน๊ะค๊ะ<br>
+            <span style="color: purple; font-weight: bold;">ที่ร๊าก ก 💜</span><br>
+            <span id="timer" style="font-size: 0.9rem; color: #777;">คำนวณเวลา...</span>
+        </div>
         <div class="heart-container" onclick="fillHeart()">
             <svg viewBox="0 0 200 200" width="100%" height="100%">
                 <defs>
                     <mask id="heartMask"><path d="M100,180 C20,130 0,80 0,50 C0,20 25,0 55,0 C75,0 90,15 100,30 C110,15 125,0 145,0 C175,0 200,20 200,50 C200,80 180,130 100,180 Z" fill="white"/></mask>
-                    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff9a9e;" /><stop offset="100%" style="stop-color:#fecfef;" /></linearGradient>
+                    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:1" /><stop offset="100%" style="stop-color:#fecfef;stop-opacity:1" /></linearGradient>
                 </defs>
                 <path d="M100,180 C20,130 0,80 0,50 C0,20 25,0 55,0 C75,0 90,15 100,30 C110,15 125,0 145,0 C175,0 200,20 200,50 C200,80 180,130 100,180 Z" fill="none" stroke="#ff5c8a" stroke-width="4" />
                 <rect x="0" y="200" width="200" height="200" fill="url(#pinkGrad)" mask="url(#heartMask)" id="waterLevel"></rect>
             </svg>
             <div style="position:absolute; top:45%; width:100%; text-align:center; color:#fff; font-weight:bold;"><span id="percent">0%</span></div>
         </div>
-        <p style="margin-top:20px; color:#999; animation: blink 1s infinite;">👆 จิ้มหัวใจเติมรักให้เต็ม!</p>
+        <p class="tap-msg">👆 จิ้มหัวใจเติมรักให้เต็ม!</p>
     </div>
 
     <div id="page3" class="page">
         <h2 style="margin-bottom:20px;">มีความลับซ่อนอยู่...</h2>
         <div class="scratch-box">
             <img src="photo1.jpg" style="width:100%; height:100%; object-fit:cover;">
-            <canvas id="scratchCanvas" width="300" height="300" style="position:absolute; top:0; left:0;"></canvas>
+            <canvas id="scratchCanvas" width="300" height="300" style="position:absolute; top:0; left:0; cursor:pointer;"></canvas>
         </div>
-        <p style="margin-top:15px; color:#888;">ขูดรูปแรกของเราให้สะอาดเลยนะ</p>
+        <p style="margin-top:15px; color:#888;">ขูดให้สะอาดเลยนะ</p>
     </div>
 
     <div id="page4" class="page" style="padding:0;">
         <div class="inventory">
             <div class="inv-slot" id="slot1"></div><div class="inv-slot" id="slot2"></div><div class="inv-slot" id="slot3"></div><div class="inv-slot" id="slot4"></div><div class="inv-slot" id="slot5"></div>
         </div>
+        <div class="game-hint">ช่วยตามหารูปที่ซ่อนอยู่ 5 ใบหน่อยนะ! 👇</div>
         <div class="room-scene">
             <div class="hidden-item" style="top:15%; right:25%;" onclick="foundPhoto(1, this)"><img src="photo1.jpg"></div>
             <div class="hidden-item" style="bottom:20%; left:10%;" onclick="foundPhoto(2, this)"><img src="photo2.jpg"></div>
@@ -202,30 +232,30 @@
     <div class="modal-overlay" id="previewModal">
         <div class="modal-card">
             <img src="" id="previewImg">
-            <p id="previewCaption" style="white-space: pre-line; color:#555;"></p>
-            <button onclick="confirmKeep()" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:20px; margin-top:10px;">เก็บไว้ในใจ ❤️</button>
+            <p id="previewCaption" style="font-weight:400; color:#555; margin:0; line-height:1.4;"></p>
+            <button class="btn-keep" onclick="confirmKeep()">เก็บใส่กระเป๋า ❤️</button>
         </div>
     </div>
 
     <div class="final-msg-container" id="finalMsgContainer">
-        <div class="bg-floaters" id="finalFloaters"></div>
+        <div id="finalFloaters" style="position:absolute; width:100%; height:100%;"></div>
         <div class="final-msg-box">
-            <h2>💋 MoRnInG KiSs T”RuK 👩🏻</h2>
             <p>
+                💋 MoRnInG KiSs T”RuK 👩🏻<br><br>
                 🤍 สวีดัด !!! วันแห่งฟาร์มรักนะคะ 💝<br><br>
                 💜 ขอบคุณเธอนะ : ที่ยังอยู่ ให้เราได้คิดถึง<br><br>
-                🙏 ขอโทษเธอนะ : กับทุกสิ่งทุกอย่างที่ผ่านมา<br>
+                🙏 ขอโทษเธอนะ : กับทุกสิ่งทุกอย่างที่ผ่านมา <br>
                 (ที่ทำให้เธอรู้สึกไม่โอเค)<br><br>
                 👱🏻‍♀️ ถึงแม้ !!! บ่อยครั้ง ... ที่เราดูเป็นคนพูดไม่รู้เรื่อง<br>
-                +เข้าใจยาก และมีความเป็นเด็กสูงในสายตา<br>
-                และในความคิดของเธอ แต่เราก็รักเธอ (ที่สุด)<br>
+                +เข้าใจยาก และมีความเป็นเด็กสูงในสายตา <br>
+                และในความคิดของเธอ แต่เราก็รักเธอ (ที่สุด) <br>
                 ไม่แพ้ไปกว่าใครนะคะ<br><br>
-                🫶🏻 สุดท้ายนี้ !!! เราอยากจะบอกเธอว่า ...<br>
-                เรายังคงรักเธอ ใส่ใจเธอ<br>
-                เป็นห่วงเป็นใยเธอ<br>
-                ยังคงเป็นพื้นที่ปลอดภัยให้เธอ<br>
+                🫶🏻 สุดท้ายนี้ !!! เราอยากจะบอกเธอว่า ... <br>
+                เรายังคงรักเธอ ใส่ใจเธอ <br>
+                เป็นห่วงเป็นใยเธอ <br>
+                ยังคงเป็นพื้นที่ปลอดภัยให้เธอ <br>
                 และหวังดีกับเธอเสมอ ๆ น่าส์ที่รัก<br><br>
-                👩🏻‍❤️‍👩🏻 ในวันข้างหน้า !!! ให้เราโตกว่านี้<br>
+                👩🏻‍❤️‍👩🏻 ในวันข้างหน้า !!! ให้เราโตกว่านี้ <br>
                 (เธอค่อยกลับมา<br>
                 พิจารณาเราใหม่อีกครั้งนะคะ<br>
                 ... หากเธอยังไม่มีใคร)<br><br>
@@ -236,13 +266,13 @@
 
     <script>
         // --- CONFIG ---
-        const startDate = new Date(2024, 4, 1); // พฤษภาคม (Month index 4) 2567
+        const startDate = new Date(2024, 4, 1); // พฤษภาคม 2567 (JS เดือนเริ่มที่ 0)
         const photos = [
-            { src: "photo1.jpg", caption: "รูปแรกของเรา" },
-            { src: "photo2.jpg", caption: "หลังจากเราคุยกันได้ 2 เดือน\n(เราก็นัดเจอกันครั้งแรก/ตื่นเต้นฝุด ๆ เบย)" },
-            { src: "photo3.jpg", caption: "เราดีใจน๊ะ ที่ได้มีโอกาสดูแลเธอ (บ้าง)\nเอ็นดูจังอ๊า (ป่านนี้เธอหายดีแล๊วรึยังน๊าส์)" },
-            { src: "photo4.jpg", caption: "แล๊วเราก็ได้มีโอกาสสร้างบุญกับเธอ\nอยู่บ่อย ๆ เลยน๊าส์\n(เชื่อสิ๊ !!! คู่กันแล๊วจะไม่แคล๊วกันน๊ะ)" },
-            { src: "photo5.jpg", caption: "และเราก็ไม่คิดว่าครั้งนี้\nจะได้เจอกันเป็นครั้งสุดท้ายเน๊าะ 😞\n(6/9/2025)" }
+            { src: "photo1.jpg", caption: "" },
+            { src: "photo2.jpg", caption: "หลังจากเราคุยกันได้ 2 เดือน <br>(เราก็นัดเจอกันครั้งแรก/ตื่นเต้นฝุด ๆ เบย)" },
+            { src: "photo3.jpg", caption: "เราดีใจน๊ะ ที่ได้มีโอกาสดูแลเธอ (บ้าง) <br>เอ็นดูจังอ๊า (ป่านนี้เธอหายดีแล๊วรึยังน๊าส์)" },
+            { src: "photo4.jpg", caption: "แล๊วเราก็ได้มีโอกาสสร้างบุญกับเธอ<br>อยู่บ่อย ๆ เลยน๊าส์<br>(เชื่อสิ๊ !!! คู่กันแล๊วจะไม่แคล๊วกันน๊ะ)" },
+            { src: "photo5.jpg", caption: "และเราก็ไม่คิดว่าครั้งนี้<br>จะได้เจอกันเป็นครั้งสุดท้ายเน๊าะ 😞<br>(6/9/2025)" }
         ];
 
         let audioPlaying = false;
@@ -250,10 +280,10 @@
             if(!audioPlaying) {
                 document.getElementById('bgm').play().catch(()=>{});
                 audioPlaying = true;
-                document.querySelector('.music-hint').style.display = 'none';
+                if(document.querySelector('.music-hint')) document.querySelector('.music-hint').style.display = 'none';
             }
         }
-
+        
         const emojis = ['🌸', '❤️', '💌', '🌹', '✨', '💖', '👩🏻', '🦚'];
         function createFloaters(containerId, num) {
             const container = document.getElementById(containerId);
@@ -262,7 +292,7 @@
                 el.className = 'floater';
                 el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
                 el.style.left = Math.random() * 100 + '%';
-                el.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                el.style.fontSize = (Math.random() * 20 + 15) + 'px';
                 el.style.animationDuration = (Math.random() * 5 + 5) + 's';
                 el.style.animationDelay = (Math.random() * 5) + 's';
                 container.appendChild(el);
@@ -284,23 +314,21 @@
             }, 500);
         }
 
-        // PAGE 1 Logic
         const env = document.getElementById('envelope');
         env.style.left = "50%"; env.style.top = "40%"; env.style.transform = "translate(-50%, -50%)";
         function moveEnv() {
-            const x = Math.random() * (window.innerWidth - 120);
-            const y = Math.random() * (window.innerHeight - 120);
-            env.style.left = x + 'px'; env.style.top = y + 'px'; env.style.transform = "none";
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            env.style.transform = "translate(0,0)"; env.style.left = x + 'px'; env.style.top = y + 'px';
         }
         let touches = 0;
         function moveEnvMobile(e) {
             touches++;
             if(touches < 4) { e.preventDefault(); moveEnv(); }
-            else { goTo('page2'); }
+            else { setTimeout(() => goTo('page2'), 200); }
         }
         env.onclick = () => goTo('page2');
 
-        // PAGE 2 Logic
         function startTimer() {
             setInterval(() => {
                 const now = new Date();
@@ -312,6 +340,7 @@
                 document.getElementById('timer').innerText = `${days} วัน ${h} ชม. ${m} นาที ${s} วินาที`;
             }, 1000);
         }
+
         let percent = 0;
         function fillHeart() {
             percent += 20; if(percent > 100) percent = 100;
@@ -320,7 +349,6 @@
             if(percent >= 100) setTimeout(() => goTo('page3'), 800);
         }
 
-        // PAGE 3 Logic
         function startScratch() {
             const c = document.getElementById('scratchCanvas'); const ctx = c.getContext('2d');
             ctx.fillStyle = '#C0C0C0'; ctx.fillRect(0,0,300,300);
@@ -331,28 +359,26 @@
                 for(let i=3; i<d.length; i+=4) if(d[i]===0) t++;
                 if(t/(300*300) > 0.5) { c.style.display = 'none'; setTimeout(() => goTo('page4'), 1000); }
             }
-            c.addEventListener('mousedown', () => isDrawing=true);
-            window.addEventListener('mouseup', () => isDrawing=false);
-            c.addEventListener('mousemove', (e) => { if(isDrawing){ const r = c.getBoundingClientRect(); scratch(e.clientX-r.left, e.clientY-r.top); }});
-            c.addEventListener('touchstart', (e) => { isDrawing=true; e.preventDefault(); });
-            c.addEventListener('touchmove', (e) => { if(isDrawing){ const r = c.getBoundingClientRect(); scratch(e.touches[0].clientX-r.left, e.touches[0].clientY-r.top); e.preventDefault(); }});
+            const down = () => isDrawing=true; const up = () => isDrawing=false;
+            const move = (e) => { if(!isDrawing) return; const r = c.getBoundingClientRect(); scratch((e.touches?e.touches[0].clientX:e.clientX)-r.left, (e.touches?e.touches[0].clientY:e.clientY)-r.top); }
+            c.addEventListener('mousedown', down); c.addEventListener('mouseup', up); c.addEventListener('mousemove', move);
+            c.addEventListener('touchstart', (e)=>{down();e.preventDefault()}); c.addEventListener('touchend', up); c.addEventListener('touchmove', move);
         }
 
-        // PAGE 4 Logic
-        let currentIdx = 0; let currentEl = null; let count = 0;
+        let currentPhotoIdx = 0; let currentElement = null; let collected = 0;
         function foundPhoto(idx, el) {
-            currentIdx = idx; currentEl = el;
+            currentPhotoIdx = idx; currentElement = el;
             document.getElementById('previewImg').src = photos[idx-1].src;
-            document.getElementById('previewCaption').innerText = photos[idx-1].caption;
+            document.getElementById('previewCaption').innerHTML = photos[idx-1].caption;
             document.getElementById('previewModal').style.display = 'flex';
         }
         function confirmKeep() {
             document.getElementById('previewModal').style.display = 'none';
-            currentEl.style.display = 'none';
-            const slot = document.getElementById('slot' + currentIdx);
-            slot.classList.add('filled'); slot.innerHTML = `<img src="${photos[currentIdx-1].src}">`;
-            count++;
-            if(count === 5) {
+            currentElement.style.opacity = '0'; currentElement.style.pointerEvents = 'none';
+            const slot = document.getElementById('slot' + currentPhotoIdx);
+            slot.classList.add('filled'); slot.innerHTML = `<img src="${photos[currentPhotoIdx-1].src}">`;
+            collected++;
+            if(collected === 5) {
                 createFloaters('finalFloaters', 30);
                 setTimeout(() => { document.getElementById('finalMsgContainer').classList.add('show-final'); }, 1000);
             }
